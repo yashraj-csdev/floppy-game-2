@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Custom Flappy Bird</title>
+
+  <!-- Mobile friendly -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      text-align: center;
+      background: #87ceeb;
+      font-family: Arial, sans-serif;
+    }
+
+    h2 {
+      margin-top: 10px;
+    }
+
+    #controls {
+      margin: 10px;
+    }
+
+    canvas {
+      background: #70c5ce;
+      border: 2px solid black;
+      display: block;
+      margin: 10px auto;
+      touch-action: manipulation;
+    }
+
+    input, button {
+      margin: 5px;
+      padding: 6px;
+      font-size: 14px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h2>Custom Flappy Bird</h2>
+
+  <!-- IMAGE UPLOAD CONTROLS -->
+  <div id="controls">
+    <label>
+      Bird Image:
+      <input type="file" id="birdInput" accept="image/*">
+    </label>
+    <br>
+
+    <label>
+      Pipe Image:
+      <input type="file" id="pipeInput" accept="image/*">
+    </label>
+    <br>
+
+    <p>Tap canvas or press SPACE to start</p>
+  </div>
+
+  <!-- GAME CANVAS -->
+  <canvas id="gameCanvas" width="400" height="600"></canvas>
+
+  <!-- GAME LOGIC -->
+  <script src="game.js"></script>
+
+</body>
+</html>

@@ -5,6 +5,9 @@ const ctx = canvas.getContext("2d");
 const WIDTH = 400;
 const HEIGHT = 600;
 
+canvas.width = WIDTH;
+canvas.height = HEIGHT;
+
 // ---------- GAME STATE ----------
 let gameStarted = false;
 let gameOver = false;
@@ -13,8 +16,9 @@ let gameOver = false;
 let birdX = 100;
 let birdY = 300;
 let velocity = 0;
-const gravity = 0.4;
-const jumpStrength = -7;
+
+const gravity = 0.25;      // smoother gravity (mobile friendly)
+const jumpStrength = -5;   // softer jump
 const birdRadius = 15;
 
 let birdImg = null;
@@ -23,10 +27,14 @@ let birdImg = null;
 let pipeX = WIDTH;
 const pipeWidth = 60;
 const pipeSpeed = 2;
+
 let pipeHeight = randInt(150, 300);
-let pipeGap = randInt(140, 200);
+let pipeGap = randInt(150, 210);
 
 let pipeImg = null;
+
+// ---------- INPUT CONTROL ----------
+let canJump = true;
 
 // ---------- RANDOM ----------
 function randInt(min, max) {
@@ -37,7 +45,7 @@ function randInt(min, max) {
 function resetPipe() {
   pipeX = WIDTH;
   pipeHeight = randInt(150, 300);
-  pipeGap = randInt(140, 200);
+  pipeGap = randInt(150, 210);
 }
 
 // ---------- RESET GAME ----------
@@ -70,12 +78,21 @@ document.getElementById("pipeInput").addEventListener("change", () => {
 
 // ---------- INPUT ----------
 function jump() {
+  if (!canJump) return;
+
   if (gameOver) {
     resetGame();
     return;
   }
+
   gameStarted = true;
   velocity = jumpStrength;
+  canJump = false;
+
+  // prevent jump spamming (important for mobile)
+  setTimeout(() => {
+    canJump = true;
+  }, 150);
 }
 
 canvas.addEventListener("click", jump);
@@ -83,10 +100,10 @@ document.addEventListener("keydown", e => {
   if (e.code === "Space") jump();
 });
 
-// ---------- COLLISION CHECK ----------
+// ---------- COLLISION ----------
 function checkCollision() {
-  // Ground or top
-  if (birdY + birdRadius > HEIGHT || birdY - birdRadius < 0) {
+  // Top or bottom of screen
+  if (birdY - birdRadius < 0 || birdY + birdRadius > HEIGHT) {
     gameOver = true;
   }
 
@@ -110,6 +127,10 @@ function gameLoop() {
 
   if (gameStarted && !gameOver) {
     velocity += gravity;
+
+    // limit fall speed
+    if (velocity > 8) velocity = 8;
+
     birdY += velocity;
     pipeX -= pipeSpeed;
 
@@ -145,7 +166,7 @@ function gameLoop() {
   ctx.font = "20px Arial";
 
   if (!gameStarted) {
-    ctx.fillText("Tap or Press SPACE to Start", 90, HEIGHT / 2);
+    ctx.fillText("Tap or Press SPACE to Start", 80, HEIGHT / 2);
   }
 
   if (gameOver) {
